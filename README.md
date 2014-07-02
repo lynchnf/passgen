@@ -1,4 +1,4 @@
-password
+Password
 ========
 
-Utility for validating user passwords and generating random passwords.
+Utility for generating random passwords and validating user entered passwords.
