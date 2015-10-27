@@ -14,10 +14,12 @@ hs_err_pid*
 /target
 
 
-# Eclipse files and build directories
+# IDE files and build directories
 .metadata
 .settings
 build
 target
 .classpath
 .project
+.idea
+*.iml
