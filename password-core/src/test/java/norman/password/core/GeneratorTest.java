@@ -1,25 +1,14 @@
-package norman.password;
+package norman.password.core;
 
-import norman.password.Generator.Optionality;
+import norman.password.core.Generator.Optionality;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import static norman.password.Generator.Optionality.MANDATORY;
-import static norman.password.Generator.Optionality.PROHIBITED;
+import static norman.password.core.Generator.Optionality.MANDATORY;
+import static norman.password.core.Generator.Optionality.PROHIBITED;
 import static org.junit.Assert.*;
 
 public class GeneratorTest {
-
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }
-
     @Test
     public void testGeneratePassword() {
         int length = 8;
@@ -79,7 +68,7 @@ public class GeneratorTest {
 
     @Test
     public void testContainsDiscouragedCharacters() {
-        boolean valid1 = Generator.containsDiscouragedCharacters("PSCpsc234");
+        boolean valid1 = Generator.containsDiscouragedCharacters("XYZxyz234");
         assertFalse(valid1);
         boolean valid2 = Generator.containsDiscouragedCharacters("FO0BAR");
         assertTrue("discouragedChar", valid2);

@@ -1,6 +1,8 @@
-package norman.password;
+package norman.password.core;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.Random;
  * @author LYNCHNF
  */
 public class Generator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Generator.class);
 
     // These are protected so they can be used by the unit test.
     protected static final char[] LOWERS =
@@ -28,26 +31,12 @@ public class Generator {
         PROHIBITED, OPTIONAL, MANDATORY;
     }
 
-    public static void main(String[] args) {
-        System.out.println("starting");
-
-        int length = 8;
-        boolean allowNumberForFirstChar = false;
-        Optionality includeLows = Optionality.MANDATORY;
-        Optionality includeCaps = Optionality.MANDATORY;
-        Optionality includeNumbers = Optionality.MANDATORY;
-        Optionality includeSpecials = Optionality.PROHIBITED;
-
-        String password = generatePassword(length, allowNumberForFirstChar, includeLows, includeCaps, includeNumbers,
-                includeSpecials);
-
-        System.out.println("password=\"" + password + "\"");
-
-        System.out.println("finished");
-    }
-
     public static String generatePassword(int length, boolean allowNumberForFirstChar, Optionality includeLows,
             Optionality includeCaps, Optionality includeNumbers, Optionality includeSpecials) {
+        LOGGER.debug(String.format(
+                "Generating password with parameters length=%d, allowNumberForFirstChar=%b, includeLows=%s, includeCaps=%s, includeNumbers=%s, and includeSpecials=%s.",
+                length, allowNumberForFirstChar, includeLows, includeCaps, includeNumbers, includeSpecials));
+
         Optionality includeNumberForFirstChar = Optionality.PROHIBITED;
         if (allowNumberForFirstChar) {
             includeNumberForFirstChar = includeNumbers;
@@ -77,6 +66,10 @@ public class Generator {
 
     public static boolean isPasswordValid(String password, int minimumLength, boolean allowOtherChars,
             Optionality includeLows, Optionality includeCaps, Optionality includeNumbers, Optionality includeSpecials) {
+        LOGGER.debug(String.format(
+                "Validating password with parameters minimumLength=%d, allowOtherChars=%b, includeLows=%s, includeCaps=%s, includeNumbers=%s, and includeSpecials=%s.",
+                minimumLength, allowOtherChars, includeLows, includeCaps, includeNumbers, includeSpecials));
+
         boolean result = true;
         if (password.length() < minimumLength) {
             result = false;
@@ -100,7 +93,7 @@ public class Generator {
             List<Character> charList = buildCharList(includeLows, includeCaps, includeNumbers, includeSpecials);
             char[] validChars = new char[charList.size()];
             for (int i = 0; i < charList.size(); i++) {
-                validChars[i] = charList.get(i).charValue();
+                validChars[i] = charList.get(i);
             }
             if (!StringUtils.containsOnly(password, validChars)) {
                 result = false;
@@ -115,25 +108,25 @@ public class Generator {
 
     private static List<Character> buildCharList(Optionality includeLows, Optionality includeCaps,
             Optionality includeNumbers, Optionality includeSpecials) {
-        List<Character> charList = new ArrayList<Character>();
+        List<Character> charList = new ArrayList<>();
         if (Optionality.PROHIBITED != includeLows) {
             for (char c : LOWERS) {
-                charList.add(Character.valueOf(c));
+                charList.add(c);
             }
         }
         if (Optionality.PROHIBITED != includeCaps) {
             for (char c : UPPERS) {
-                charList.add(Character.valueOf(c));
+                charList.add(c);
             }
         }
         if (Optionality.PROHIBITED != includeNumbers) {
             for (char c : NUMBERS) {
-                charList.add(Character.valueOf(c));
+                charList.add(c);
             }
         }
         if (Optionality.PROHIBITED != includeSpecials) {
             for (char c : SPECIALS) {
-                charList.add(Character.valueOf(c));
+                charList.add(c);
             }
         }
         return charList;
