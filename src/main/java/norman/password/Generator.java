@@ -1,24 +1,28 @@
-package name.mutant.password;
+package norman.password;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * Utility for generating random passwords and validating user entered passwords.
- * 
+ *
  * @author LYNCHNF
  */
 public class Generator {
 
     // These are protected so they can be used by the unit test.
-    protected static final char[] LOWERS = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
-    protected static final char[] UPPERS = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
-    protected static final char[] NUMBERS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-    protected static final char[] SPECIALS = { '!', '@', '#', '$', '%', '^', '&', '*', '_', '~' };
-    protected static final char[] DISCOURAGED = { 'i', 'l', 'o', 'I', 'O', '0', '1' };
+    protected static final char[] LOWERS =
+            {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
+                    'v', 'w', 'x', 'y', 'z'};
+    protected static final char[] UPPERS =
+            {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
+                    'V', 'W', 'X', 'Y', 'Z'};
+    protected static final char[] NUMBERS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    protected static final char[] SPECIALS = {'!', '@', '#', '$', '%', '^', '&', '*', '_', '~'};
+    protected static final char[] DISCOURAGED = {'i', 'l', 'o', 'I', 'O', '0', '1'};
 
     public enum Optionality {
         PROHIBITED, OPTIONAL, MANDATORY;
@@ -34,16 +38,20 @@ public class Generator {
         Optionality includeNumbers = Optionality.MANDATORY;
         Optionality includeSpecials = Optionality.PROHIBITED;
 
-        String password = generatePassword(length, allowNumberForFirstChar, includeLows, includeCaps, includeNumbers, includeSpecials);
+        String password = generatePassword(length, allowNumberForFirstChar, includeLows, includeCaps, includeNumbers,
+                includeSpecials);
 
         System.out.println("password=\"" + password + "\"");
 
         System.out.println("finished");
     }
 
-    public static String generatePassword(int length, boolean allowNumberForFirstChar, Optionality includeLows, Optionality includeCaps, Optionality includeNumbers, Optionality includeSpecials) {
+    public static String generatePassword(int length, boolean allowNumberForFirstChar, Optionality includeLows,
+            Optionality includeCaps, Optionality includeNumbers, Optionality includeSpecials) {
         Optionality includeNumberForFirstChar = Optionality.PROHIBITED;
-        if (allowNumberForFirstChar) includeNumberForFirstChar = includeNumbers;
+        if (allowNumberForFirstChar) {
+            includeNumberForFirstChar = includeNumbers;
+        }
         List<Character> first = buildCharList(includeLows, includeCaps, includeNumberForFirstChar, includeSpecials);
         List<Character> other = buildCharList(includeLows, includeCaps, includeNumbers, includeSpecials);
 
@@ -62,12 +70,13 @@ public class Generator {
                     sb.append(character.charValue());
                 }
             }
-        } while (!isPasswordValid(sb.toString(), length, false, includeLows, includeCaps, includeNumbers, includeSpecials) || containsDiscouragedCharacters(sb.toString()));
+        } while (!isPasswordValid(sb.toString(), length, false, includeLows, includeCaps, includeNumbers,
+                includeSpecials) || containsDiscouragedCharacters(sb.toString()));
         return sb.toString();
     }
 
-    public static boolean isPasswordValid(String password, int minimumLength, boolean allowOtherChars, Optionality includeLows, Optionality includeCaps, Optionality includeNumbers,
-            Optionality includeSpecials) {
+    public static boolean isPasswordValid(String password, int minimumLength, boolean allowOtherChars,
+            Optionality includeLows, Optionality includeCaps, Optionality includeNumbers, Optionality includeSpecials) {
         boolean result = true;
         if (password.length() < minimumLength) {
             result = false;
@@ -104,7 +113,8 @@ public class Generator {
         return StringUtils.containsAny(password, DISCOURAGED);
     }
 
-    private static List<Character> buildCharList(Optionality includeLows, Optionality includeCaps, Optionality includeNumbers, Optionality includeSpecials) {
+    private static List<Character> buildCharList(Optionality includeLows, Optionality includeCaps,
+            Optionality includeNumbers, Optionality includeSpecials) {
         List<Character> charList = new ArrayList<Character>();
         if (Optionality.PROHIBITED != includeLows) {
             for (char c : LOWERS) {
