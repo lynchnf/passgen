@@ -23,7 +23,7 @@
         </rollingPolicy>
     </appender>
 
-    <logger name="norman.password" level="debug"/>
+    <logger name="norman.password.ui" level="debug"/>
     <root level="info">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>

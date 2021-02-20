@@ -5,12 +5,17 @@ import norman.password.core.Generator.Optionality;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
-import java.util.Locale;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -22,7 +27,6 @@ public class MainFrame extends JFrame implements ActionListener {
     private ResourceBundle bundle;
     private Properties appProps;
     private Container desktop;
-    private JMenuItem optionsFileItem;
     private JMenuItem exitFileItem;
 
     private JSpinner nbrOfPasswordsSpinner;
@@ -38,16 +42,20 @@ public class MainFrame extends JFrame implements ActionListener {
 
     public MainFrame(Properties appProps) throws HeadlessException {
         super();
+        setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.appProps = appProps;
-        Locale.setDefault(Locale.forLanguageTag(appProps.getProperty("main.frame.language")));
 
         initComponents();
-/*
-        int width = Integer.parseInt(appProps.getProperty("main.frame.width"));
-        int height = Integer.parseInt(appProps.getProperty("main.frame.height"));
-        setSize(width, height);
-*/
+
+        nbrOfPasswordsSpinner.setValue(Integer.parseInt(appProps.getProperty("nbr.of.passwords")));
+        lengthSpinner.setValue(Integer.parseInt(appProps.getProperty("length")));
+        numberForFirstCheckBox.setSelected(Boolean.parseBoolean(appProps.getProperty("number.for.first")));
+        lowerCaseCheckBox.setSelected(Boolean.parseBoolean(appProps.getProperty("lower.case")));
+        upperCaseCheckBox.setSelected(Boolean.parseBoolean(appProps.getProperty("upper.case")));
+        numericCheckBox.setSelected(Boolean.parseBoolean(appProps.getProperty("numeric")));
+        specialCheckBox.setSelected(Boolean.parseBoolean(appProps.getProperty("special")));
+
         pack();
         int x = Integer.parseInt(appProps.getProperty("main.frame.location.x"));
         int y = Integer.parseInt(appProps.getProperty("main.frame.location.y"));
@@ -55,29 +63,16 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     private void initComponents() {
-        LOGGER.debug("Initializing window components. Locale = " + Locale.getDefault());
         bundle = ResourceBundle.getBundle("norman.password.ui.MainFrame");
         setTitle(bundle.getString("title"));
         desktop = new JPanel(new GridBagLayout());
         setContentPane(desktop);
-        JMenuBar menuBar = new JMenuBar();
-        setJMenuBar(menuBar);
-
-        JMenu fileMenu = new JMenu(bundle.getString("menu.file"));
-        menuBar.add(fileMenu);
-        optionsFileItem = new JMenuItem(bundle.getString("menu.file.options"));
-        fileMenu.add(optionsFileItem);
-        optionsFileItem.addActionListener(this);
-        fileMenu.add(new JSeparator());
-        exitFileItem = new JMenuItem(bundle.getString("menu.file.exit"));
-        fileMenu.add(exitFileItem);
-        exitFileItem.addActionListener(this);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
         c.anchor = GridBagConstraints.LINE_START;
-        desktop.add(new JLabel("Number of Passwords"), c);
+        desktop.add(new JLabel(bundle.getString("nbr.of.passwords.label")), c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
@@ -90,7 +85,7 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 1;
         c.anchor = GridBagConstraints.LINE_START;
-        desktop.add(new JLabel("Password Length"), c);
+        desktop.add(new JLabel(bundle.getString("length.label")), c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
@@ -103,7 +98,7 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 2;
         c.anchor = GridBagConstraints.LINE_START;
-        desktop.add(new JLabel("Allow Number for First Character"), c);
+        desktop.add(new JLabel(bundle.getString("number.for.first.label")), c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
@@ -116,7 +111,7 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 3;
         c.anchor = GridBagConstraints.LINE_START;
-        desktop.add(new JLabel("Include Lower Case Characters"), c);
+        desktop.add(new JLabel(bundle.getString("lower.case.label")), c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
@@ -129,7 +124,7 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 4;
         c.anchor = GridBagConstraints.LINE_START;
-        desktop.add(new JLabel("Include Upper Case Characters"), c);
+        desktop.add(new JLabel(bundle.getString("upper.case.label")), c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
@@ -142,7 +137,7 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 5;
         c.anchor = GridBagConstraints.LINE_START;
-        desktop.add(new JLabel("Include Numeric Characters"), c);
+        desktop.add(new JLabel(bundle.getString("numeric.label")), c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
@@ -155,7 +150,7 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 6;
         c.anchor = GridBagConstraints.LINE_START;
-        desktop.add(new JLabel("Include Special Characters"), c);
+        desktop.add(new JLabel(bundle.getString("special.label")), c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
@@ -168,7 +163,7 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 7;
         c.gridwidth = 2;
-        generateButton = new JButton("Generate Password");
+        generateButton = new JButton(bundle.getString("generate.button.label"));
         desktop.add(generateButton, c);
         generateButton.addActionListener(this);
 
@@ -176,54 +171,36 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 8;
         c.anchor = GridBagConstraints.LINE_START;
-        passwordsTextArea = new JTextArea(2, 20);
+        passwordsTextArea = new JTextArea(3, 20);
         passwordsTextArea.setEditable(false);
-        desktop.add(passwordsTextArea, c);
+        JScrollPane scrollPane = new JScrollPane(passwordsTextArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        desktop.add(scrollPane, c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
         c.gridy = 8;
-        c.anchor = GridBagConstraints.LINE_START;
-        clipboardButton = new JButton("Clipboard");
-        clipboardButton.setToolTipText("Copy To Clipboard");
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            URL url = loader.getResource("images/clipboard-regular.png");
+            BufferedImage image = ImageIO.read(url);
+            ImageIcon icon = new ImageIcon(image);
+            clipboardButton = new JButton(icon);
+            clipboardButton.setToolTipText(bundle.getString("clipboard.button.tool.tip.text"));
+        } catch (IOException e) {
+            LOGGER.warn("Unable to create button icon", e);
+            clipboardButton = new JButton(bundle.getString("clipboard.button.tool.tip.text"));
+        }
         desktop.add(clipboardButton, c);
         clipboardButton.addActionListener(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        if (actionEvent.getSource().equals(exitFileItem)) {
-            LOGGER.debug("Processing exit menu item.");
-            processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-        } else if (actionEvent.getSource().equals(optionsFileItem)) {
-            options();
-        } else if (actionEvent.getSource().equals(generateButton)) {
-            int nbrOfPasswords = (int) nbrOfPasswordsSpinner.getValue();
-            int length = (int) lengthSpinner.getValue();
-            boolean allowNumberForFirstChar = numberForFirstCheckBox.isSelected();
-            Optionality includeLows = lowerCaseCheckBox.isSelected() ? MANDATORY : PROHIBITED;
-            Optionality includeCaps = upperCaseCheckBox.isSelected() ? MANDATORY : PROHIBITED;
-            Optionality includeNumbers = numericCheckBox.isSelected() ? MANDATORY : PROHIBITED;
-            Optionality includeSpecials = specialCheckBox.isSelected() ? MANDATORY : PROHIBITED;
-            if (includeLows == PROHIBITED && includeCaps == PROHIBITED && includeNumbers == PROHIBITED &&
-                    includeSpecials == PROHIBITED) {
-                passwordsTextArea.setText(null);
-            } else {
-                StringBuilder sb = null;
-                for (int i = 0; i < nbrOfPasswords; i++) {
-
-                    String password = Generator
-                            .generatePassword(length, allowNumberForFirstChar, includeLows, includeCaps, includeNumbers,
-                                    includeSpecials);
-                    if (sb == null) {
-                        sb = new StringBuilder(password);
-                    } else {
-                        sb.append(System.lineSeparator());
-                        sb.append(password);
-                    }
-                }
-                passwordsTextArea.setText(sb.toString());
-            }
+        if (actionEvent.getSource().equals(generateButton)) {
+            generatePassword();
+        } else if (actionEvent.getSource().equals(clipboardButton)) {
+            copyPasswordsToClipboard();
         }
     }
 
@@ -232,12 +209,17 @@ public class MainFrame extends JFrame implements ActionListener {
         if (windowEvent.getSource() == this && windowEvent.getID() == WindowEvent.WINDOW_CLOSING) {
 
             // Get current size and position of UI and remember it.
-            Dimension size = getSize();
-            appProps.setProperty("main.frame.width", Integer.toString(size.width));
-            appProps.setProperty("main.frame.height", Integer.toString(size.height));
             Point location = getLocation();
             appProps.setProperty("main.frame.location.x", Integer.toString(location.x));
             appProps.setProperty("main.frame.location.y", Integer.toString(location.y));
+
+            appProps.setProperty("nbr.of.passwords", Integer.toString((Integer) nbrOfPasswordsSpinner.getValue()));
+            appProps.setProperty("length", Integer.toString((Integer) lengthSpinner.getValue()));
+            appProps.setProperty("number.for.first", Boolean.toString(numberForFirstCheckBox.isSelected()));
+            appProps.setProperty("lower.case", Boolean.toString(lowerCaseCheckBox.isSelected()));
+            appProps.setProperty("upper.case", Boolean.toString(upperCaseCheckBox.isSelected()));
+            appProps.setProperty("numeric", Boolean.toString(numericCheckBox.isSelected()));
+            appProps.setProperty("special", Boolean.toString(specialCheckBox.isSelected()));
 
             // Save the properties file to a local file.
             try {
@@ -250,49 +232,40 @@ public class MainFrame extends JFrame implements ActionListener {
         super.processWindowEvent(windowEvent);
     }
 
-    private void options() {
-        // Put up an options panel to change language.
-        JFrame optionsFrame = new JFrame();
-        optionsFrame.setTitle(bundle.getString("options.title"));
-        optionsFrame.setResizable(false);
+    private void generatePassword() {
+        int nbrOfPasswords = (int) nbrOfPasswordsSpinner.getValue();
+        int length = (int) lengthSpinner.getValue();
+        boolean allowNumberForFirstChar = numberForFirstCheckBox.isSelected();
+        Optionality includeLows = lowerCaseCheckBox.isSelected() ? MANDATORY : PROHIBITED;
+        Optionality includeCaps = upperCaseCheckBox.isSelected() ? MANDATORY : PROHIBITED;
+        Optionality includeNumbers = numericCheckBox.isSelected() ? MANDATORY : PROHIBITED;
+        Optionality includeSpecials = specialCheckBox.isSelected() ? MANDATORY : PROHIBITED;
+        if (includeLows == PROHIBITED && includeCaps == PROHIBITED && includeNumbers == PROHIBITED &&
+                includeSpecials == PROHIBITED) {
+            passwordsTextArea.setText(null);
+            JOptionPane.showMessageDialog(this, bundle.getString("validate.message.generate"),
+                    bundle.getString("error.dialog.title"), JOptionPane.ERROR_MESSAGE);
+        } else {
+            StringBuilder sb = null;
+            for (int i = 0; i < nbrOfPasswords; i++) {
 
-        JPanel optionsPanel = new JPanel();
-        optionsFrame.add(optionsPanel);
-        optionsPanel.setOpaque(false);
-
-        JLabel langLabel = new JLabel(bundle.getString("options.language"));
-        optionsPanel.add(langLabel);
-
-        LocaleWrapper[] locales =
-                {new LocaleWrapper(Locale.ENGLISH), new LocaleWrapper(Locale.FRENCH), new LocaleWrapper(Locale.GERMAN)};
-        JComboBox langComboBox = new JComboBox(locales);
-        optionsPanel.add(langComboBox);
-        langComboBox.setSelectedItem(new LocaleWrapper());
-        MainFrame mainFrame = this;
-        langComboBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                LocaleWrapper newLang = (LocaleWrapper) langComboBox.getSelectedItem();
-                appProps.setProperty("main.frame.language", newLang.getLocale().toLanguageTag());
-                try {
-                    Application.storeProps(appProps);
-                } catch (LoggingException e) {
-                    JOptionPane.showMessageDialog(mainFrame,
-                            bundle.getString("error.message.saving.window.size.and.location"),
-                            bundle.getString("error.dialog.title"), JOptionPane.ERROR_MESSAGE);
+                String password = Generator
+                        .generatePassword(length, allowNumberForFirstChar, includeLows, includeCaps, includeNumbers,
+                                includeSpecials);
+                if (sb == null) {
+                    sb = new StringBuilder(password);
+                } else {
+                    sb.append(System.lineSeparator());
+                    sb.append(password);
                 }
-
-                Locale.setDefault(newLang.getLocale());
-                initComponents();
-                optionsFrame.dispose();
             }
-        });
-        optionsFrame.pack();
+            passwordsTextArea.setText(sb.toString());
+        }
+    }
 
-        int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-        int optionsWidth = optionsFrame.getWidth();
-        int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
-        int optionsHeight = optionsFrame.getHeight();
-        optionsFrame.setLocation((screenWidth - optionsWidth) / 2, (screenHeight - optionsHeight) / 2);
-        optionsFrame.setVisible(true);
+    private void copyPasswordsToClipboard() {
+        StringSelection stringSelection = new StringSelection(passwordsTextArea.getText());
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
     }
 }

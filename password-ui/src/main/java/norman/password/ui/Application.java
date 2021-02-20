@@ -11,16 +11,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("application");
-    private static final String APP_DIR_NAME = ".example-gui";
-    private static final String APP_PROPS_FILE_NAME = "example-gui.properties";
-    private static final String APP_PROPS_FILE_COMMENTS = "Example GUI";
+    private static final String APP_DIR_NAME = ".password";
+    private static final String APP_PROPS_FILE_NAME = "password.properties";
+    private static final String APP_PROPS_FILE_COMMENTS = "Password Generator";
 
     public static void main(String[] args) {
         LOGGER.debug("Starting Application");
@@ -45,11 +44,16 @@ public class Application {
     private static Properties loadProps() throws LoggingException {
         // Create properties object with default values.
         Properties appProps = new Properties();
-        appProps.setProperty("main.frame.width", BUNDLE.getString("main.frame.width.default"));
-        appProps.setProperty("main.frame.height", BUNDLE.getString("main.frame.height.default"));
         appProps.setProperty("main.frame.location.x", BUNDLE.getString("main.frame.location.x.default"));
         appProps.setProperty("main.frame.location.y", BUNDLE.getString("main.frame.location.y.default"));
-        appProps.setProperty("main.frame.language", Locale.getDefault().toLanguageTag());
+
+        appProps.setProperty("nbr.of.passwords", BUNDLE.getString("nbr.of.passwords.default"));
+        appProps.setProperty("length", BUNDLE.getString("length.default"));
+        appProps.setProperty("number.for.first", BUNDLE.getString("number.for.first.default"));
+        appProps.setProperty("lower.case", BUNDLE.getString("lower.case.default"));
+        appProps.setProperty("upper.case", BUNDLE.getString("upper.case.default"));
+        appProps.setProperty("numeric", BUNDLE.getString("numeric.default"));
+        appProps.setProperty("special", BUNDLE.getString("special.default"));
 
         // Create home directory if it does not exist.
         File appDir = new File(SystemUtils.USER_HOME, APP_DIR_NAME);
@@ -62,7 +66,7 @@ public class Application {
         // Load properties file. Create it if it does not already exist.
         File appPropsFile = new File(appDir, APP_PROPS_FILE_NAME);
         if (appPropsFile.exists()) {
-            LOGGER.debug("Loading window size and location properties.");
+            LOGGER.debug("Loading application properties.");
             InputStream inputStream = null;
             try {
                 inputStream = new FileInputStream(appPropsFile);
@@ -79,14 +83,14 @@ public class Application {
                 }
             }
         } else {
-            LOGGER.debug("Using default window size and location properties.");
+            LOGGER.debug("Using default application properties.");
             storeProps(appProps);
         }
         return appProps;
     }
 
     public static void storeProps(Properties appProps) throws LoggingException {
-        LOGGER.debug("Storing window size and location properties.");
+        LOGGER.debug("Storing application properties.");
         File appDir = new File(SystemUtils.USER_HOME, APP_DIR_NAME);
         File appPropsFile = new File(appDir, APP_PROPS_FILE_NAME);
         FileOutputStream outputStream = null;
