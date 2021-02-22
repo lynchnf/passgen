@@ -66,3 +66,12 @@ it will not.
 randomly generated passwords.
 
 **Copy to Clipboard** - After your passwords are generated, press this button to copy them to the clipboard.
+
+## To Do
+
+- [ ] Add padding to components in UI
+- [ ] Make clipboard icon smaller
+- [ ] Attribute clipboard icon to Font Awesome
+- [ ] Handle error is not allow number for first character and only numerics included
+- [ ] Rename project to something other than password. Maybe passgen?
+
