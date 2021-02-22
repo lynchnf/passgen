@@ -1,7 +1,7 @@
-package norman.password.ui;
+package norman.passgen.ui;
 
-import norman.password.core.Generator;
-import norman.password.core.Generator.Optionality;
+import norman.passgen.core.Generator;
+import norman.passgen.core.Generator.Optionality;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,8 +19,8 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import static norman.password.core.Generator.Optionality.MANDATORY;
-import static norman.password.core.Generator.Optionality.PROHIBITED;
+import static norman.passgen.core.Generator.Optionality.MANDATORY;
+import static norman.passgen.core.Generator.Optionality.PROHIBITED;
 
 public class MainFrame extends JFrame implements ActionListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainFrame.class);
@@ -63,7 +63,7 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     private void initComponents() {
-        bundle = ResourceBundle.getBundle("norman.password.ui.MainFrame");
+        bundle = ResourceBundle.getBundle("norman.passgen.ui.MainFrame");
         setTitle(bundle.getString("title"));
         desktop = new JPanel(new GridBagLayout());
         setContentPane(desktop);

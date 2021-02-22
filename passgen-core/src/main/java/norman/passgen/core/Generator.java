@@ -1,4 +1,4 @@
-package norman.password.core;
+package norman.passgen.core;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

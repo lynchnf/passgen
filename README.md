@@ -73,5 +73,5 @@ randomly generated passwords.
 - [ ] Make clipboard icon smaller
 - [ ] Attribute clipboard icon to Font Awesome
 - [ ] Handle error is not allow number for first character and only numerics included
-- [ ] Rename project to something other than password. Maybe passgen?
+- [x] Rename project to something other than password. Maybe passgen?
 

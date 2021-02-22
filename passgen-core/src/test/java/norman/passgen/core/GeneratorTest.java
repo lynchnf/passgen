@@ -1,11 +1,11 @@
-package norman.password.core;
+package norman.passgen.core;
 
-import norman.password.core.Generator.Optionality;
+import norman.passgen.core.Generator.Optionality;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-import static norman.password.core.Generator.Optionality.MANDATORY;
-import static norman.password.core.Generator.Optionality.PROHIBITED;
+import static norman.passgen.core.Generator.Optionality.MANDATORY;
+import static norman.passgen.core.Generator.Optionality.PROHIBITED;
 import static org.junit.Assert.*;
 
 public class GeneratorTest {

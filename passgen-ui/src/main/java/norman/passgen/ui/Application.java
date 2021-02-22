@@ -1,4 +1,4 @@
-package norman.password.ui;
+package norman.passgen.ui;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
@@ -17,8 +17,8 @@ import java.util.ResourceBundle;
 public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("application");
-    private static final String APP_DIR_NAME = ".password";
-    private static final String APP_PROPS_FILE_NAME = "password.properties";
+    private static final String APP_DIR_NAME = ".passgen";
+    private static final String APP_PROPS_FILE_NAME = "passgen.properties";
     private static final String APP_PROPS_FILE_COMMENTS = "Password Generator";
 
     public static void main(String[] args) {

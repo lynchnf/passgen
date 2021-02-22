@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
     <property name="LOG_FILE_HOME" value="logs"/>
-    <property name="LOG_FILE_NAME" value="password"/>
+    <property name="LOG_FILE_NAME" value="passgen"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -23,8 +23,8 @@
         </rollingPolicy>
     </appender>
 
-    <logger name="norman.password.ui" level="debug"/>
-    <root level="info">
+    <logger name="norman.password.ui" level="info"/>
+    <root level="warn">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
     </root>

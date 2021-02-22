@@ -1,4 +1,4 @@
-package norman.password.ui;
+package norman.passgen.ui;
 
 import org.slf4j.Logger;
 

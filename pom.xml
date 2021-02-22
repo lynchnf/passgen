@@ -4,16 +4,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>norman</groupId>
-    <artifactId>password</artifactId>
+    <artifactId>passgen</artifactId>
     <version>2.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>password-core</module>
-        <module>password-ui</module>
+        <module>passgen-core</module>
+        <module>passgen-ui</module>
     </modules>
 
-    <name>Password</name>
+    <name>Passgen</name>
     <description>Utility for generating random passwords and validating user entered passwords.</description>
 
     <properties>
