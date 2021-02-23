@@ -71,12 +71,3 @@ randomly generated passwords.
 
 Clipboard icon (clipboard-regular.svg) downloaded from [Font Awesome](https://fontawesome.com/license), then converted
 to a .png file.
-
-## To Do
-
-- [x] Add padding to components in UI
-- [x] Make clipboard icon smaller
-- [x] Attribute clipboard icon to Font Awesome
-- [ ] Handle error is not allow number for first character and only numerics included
-- [x] Rename project to something other than password. Maybe passgen?
-
