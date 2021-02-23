@@ -72,12 +72,14 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 0;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(8, 16, 4, 8);
         desktop.add(new JLabel(bundle.getString("nbr.of.passwords.label")), c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
         c.gridy = 0;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(8, 8, 4, 16);
         nbrOfPasswordsSpinner = new JSpinner(new SpinnerNumberModel(88, 1, 99, 1));
         desktop.add(nbrOfPasswordsSpinner, c);
 
@@ -85,12 +87,14 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 1;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(4, 16, 4, 8);
         desktop.add(new JLabel(bundle.getString("length.label")), c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
         c.gridy = 1;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(4, 8, 4, 16);
         lengthSpinner = new JSpinner(new SpinnerNumberModel(88, 1, 99, 1));
         desktop.add(lengthSpinner, c);
 
@@ -98,12 +102,14 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 2;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(4, 16, 4, 8);
         desktop.add(new JLabel(bundle.getString("number.for.first.label")), c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
         c.gridy = 2;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(4, 8, 4, 16);
         numberForFirstCheckBox = new JCheckBox();
         desktop.add(numberForFirstCheckBox, c);
 
@@ -111,12 +117,14 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 3;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(4, 16, 4, 8);
         desktop.add(new JLabel(bundle.getString("lower.case.label")), c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
         c.gridy = 3;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(4, 8, 4, 16);
         lowerCaseCheckBox = new JCheckBox();
         desktop.add(lowerCaseCheckBox, c);
 
@@ -124,12 +132,14 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 4;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(4, 16, 4, 8);
         desktop.add(new JLabel(bundle.getString("upper.case.label")), c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
         c.gridy = 4;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(4, 8, 4, 16);
         upperCaseCheckBox = new JCheckBox();
         desktop.add(upperCaseCheckBox, c);
 
@@ -137,12 +147,14 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 5;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(4, 16, 4, 8);
         desktop.add(new JLabel(bundle.getString("numeric.label")), c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
         c.gridy = 5;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(4, 8, 4, 16);
         numericCheckBox = new JCheckBox();
         desktop.add(numericCheckBox, c);
 
@@ -150,12 +162,14 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 6;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(4, 16, 4, 8);
         desktop.add(new JLabel(bundle.getString("special.label")), c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
         c.gridy = 6;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(4, 8, 4, 16);
         specialCheckBox = new JCheckBox();
         desktop.add(specialCheckBox, c);
 
@@ -163,6 +177,7 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 7;
         c.gridwidth = 2;
+        c.insets = new Insets(4, 16, 4, 16);
         generateButton = new JButton(bundle.getString("generate.button.label"));
         desktop.add(generateButton, c);
         generateButton.addActionListener(this);
@@ -171,6 +186,7 @@ public class MainFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.gridy = 8;
         c.anchor = GridBagConstraints.LINE_START;
+        c.insets = new Insets(4, 16, 8, 8);
         passwordsTextArea = new JTextArea(3, 20);
         passwordsTextArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(passwordsTextArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -180,6 +196,7 @@ public class MainFrame extends JFrame implements ActionListener {
         c = new GridBagConstraints();
         c.gridx = 1;
         c.gridy = 8;
+        c.insets = new Insets(4, 8, 8, 16);
         try {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             URL url = loader.getResource("images/clipboard-regular.png");
@@ -240,10 +257,15 @@ public class MainFrame extends JFrame implements ActionListener {
         Optionality includeCaps = upperCaseCheckBox.isSelected() ? MANDATORY : PROHIBITED;
         Optionality includeNumbers = numericCheckBox.isSelected() ? MANDATORY : PROHIBITED;
         Optionality includeSpecials = specialCheckBox.isSelected() ? MANDATORY : PROHIBITED;
-        if (includeLows == PROHIBITED && includeCaps == PROHIBITED && includeNumbers == PROHIBITED &&
+        if (allowNumberForFirstChar && includeLows == PROHIBITED && includeCaps == PROHIBITED &&
+                includeNumbers == PROHIBITED && includeSpecials == PROHIBITED) {
+            passwordsTextArea.setText(null);
+            JOptionPane.showMessageDialog(this, bundle.getString("validate.message.generate.1"),
+                    bundle.getString("error.dialog.title"), JOptionPane.ERROR_MESSAGE);
+        } else if (!allowNumberForFirstChar && includeLows == PROHIBITED && includeCaps == PROHIBITED &&
                 includeSpecials == PROHIBITED) {
             passwordsTextArea.setText(null);
-            JOptionPane.showMessageDialog(this, bundle.getString("validate.message.generate"),
+            JOptionPane.showMessageDialog(this, bundle.getString("validate.message.generate.2"),
                     bundle.getString("error.dialog.title"), JOptionPane.ERROR_MESSAGE);
         } else {
             StringBuilder sb = null;
